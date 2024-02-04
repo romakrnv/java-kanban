@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Manager {
@@ -7,47 +8,62 @@ public class Manager {
     private HashMap<Integer, Epic> epicStorage = new HashMap<>();
     private HashMap<Integer, Subtask> subtaskStorage = new HashMap<>();
 
-    public void CreateTask(Task task) {
-        taskStorage.put(id, task);
-        id++;
-    }
-
-    public HashMap<Integer, Task> getAllTasks() {
-        return taskStorage;
-    }
-
-    public Task getTaskById(int id) {
-        return taskStorage.get(id);
+    public Collection<Task> getAllTasks() {
+        return taskStorage.values();
     }
 
     public void removeAllTask() {
         taskStorage.clear();
     }
 
+    public Task getTask(int id) {
+        return taskStorage.get(id);
+    }
+
+    public void CreateTask(Task task) {
+        taskStorage.put(id, task);
+        id++;
+    }
+
     public void updateTask(Task task) {
         taskStorage.put(task.getId(), task);
     }
 
-    public void removeTaskById(int id) {
+    public void removeTask(int id) {
         taskStorage.remove(id);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    public HashMap<Integer, Epic> getAllEpic() {
-        return epicStorage;
-    }
-
-    public Epic getEpicById(int id) {
-        return epicStorage.get(id);
+    public Collection<Epic> getAllEpic() {
+        return epicStorage.values();
     }
 
     public void removeAllEpic() {
         epicStorage.clear();
-        subtaskStorage.clear();
-        //сабтаски тоже нужно удалить
+        subtaskStorage.clear(); //сабы не могут существовать без эпиков
     }
 
-    public ArrayList<Subtask> getAllEpicsSubtasks(int id) {
+    public Epic getEpic(int id) {
+        return epicStorage.get(id);
+    }
+
+    public void createEpic(Epic epic) {
+        epicStorage.put(id, epic);
+        id++;
+    }
+
+    public void updateEpic(Epic epic) {
+        epicStorage.put(epic.getId(), epic);
+        checkEpicStatus(epic);
+    }
+
+    public void removeEpic(int id) {
+        for (int subId : epicStorage.get(id).getSubtasksId()) {
+            subtaskStorage.remove(subId);
+        }
+        epicStorage.remove(id);
+    }
+
+    public Collection<Subtask> getAllEpicsSubtasks(int id) {
         ArrayList<Subtask> subtasks = new ArrayList<>();
         for (int subId : epicStorage.get(id).getSubtasksId()) {
             subtasks.add(subtaskStorage.get(subId));
@@ -55,7 +71,7 @@ public class Manager {
         return subtasks;
     }
 
-    private void checkEpicStatus(Epic epic) { //добавление сабтаски, удаление сабтаски, апдейт сабтаски
+    private void checkEpicStatus(Epic epic) {
         if (epic.getSubtasksId().isEmpty()) {
             epic.setStatus(Status.NEW);
         } else {
@@ -69,13 +85,9 @@ public class Manager {
         epic.setStatus(Status.DONE);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    public HashMap<Integer, Subtask> getAllSubtask() { //тут по эпику?
-        return subtaskStorage;
-    }
+    public Collection<Subtask> getAllSubtask() {
+        return subtaskStorage.values();
 
-    public Subtask getSubtaskById(int id) {
-        return subtaskStorage.get(id);
     }
 
     public void removeAllSubtask(int relatedEpicId) {
@@ -83,8 +95,34 @@ public class Manager {
             subtaskStorage.remove(subId);
         }
         epicStorage.get(relatedEpicId).getSubtasksId().clear();
-        //тут думаю в рамках одного эпика, но возможно и все сразу, но зачем?
+        epicStorage.get(relatedEpicId).setStatus(Status.NEW);
     }
 
+    public Subtask getSubtask(int id) {
+        return subtaskStorage.get(id);
+    }
 
+    public void createSubTask(Subtask subtask) {
+        subtaskStorage.put(id, subtask);
+        epicStorage.get(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
+        checkEpicStatus(epicStorage.get(subtask.getRelatedEpicId()));
+        id++;
+    }
+
+    public void updateSubtask(Subtask subtask) {
+        subtask.setRelatedEpicId(subtaskStorage.get(subtask.getId()).getRelatedEpicId());
+        subtaskStorage.put(subtask.getId(), subtask);
+        checkEpicStatus(epicStorage.get(subtask.getRelatedEpicId()));
+    }
+
+    public void removeSubtask(int id) {
+        for (int i = 0; i < epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().size(); i++) {
+            if (epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().get(i) == id) {
+                epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().remove(i);
+                return;
+            }
+        }
+        checkEpicStatus(epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()));
+        subtaskStorage.remove(id);
+    }
 }
