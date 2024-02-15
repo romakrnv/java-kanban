@@ -1,15 +1,18 @@
+package Task;
+
+import Enums.Status;
+
 public class Subtask extends Task {
 
     private int relatedEpicId;
 
-    public Subtask(String name, String description, int id, Status status, int relatedEpicId) {
-        super(name, description, id, status);
+    public Subtask(String name, String description, int relatedEpicId) {
+        super(name, description);
         this.relatedEpicId = relatedEpicId;
     }
 
     public Subtask(String name, String description, int id, Status status) {
         super(name, description, id, status);
-
     }
 
     public void setRelatedEpicId(int relatedEpicId) {
@@ -22,11 +25,11 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "Task.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
-                ", status=" + getStatus() +
+                ", status=" + getStatus() + '\'' +
                 "relatedEpicId=" + relatedEpicId +
                 '}';
     }

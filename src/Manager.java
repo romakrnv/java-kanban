@@ -1,12 +1,16 @@
+import Enums.Status;
+import Task.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class Manager {
     public static int id = 1;
-    private HashMap<Integer, Task> taskStorage = new HashMap<>();
-    private HashMap<Integer, Epic> epicStorage = new HashMap<>();
-    private HashMap<Integer, Subtask> subtaskStorage = new HashMap<>();
+    private final HashMap<Integer, Task> taskStorage = new HashMap<>();
+    private final HashMap<Integer, Epic> epicStorage = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtaskStorage = new HashMap<>();
+
 
     public Collection<Task> getAllTasks() {
         return taskStorage.values();
@@ -21,6 +25,7 @@ public class Manager {
     }
 
     public void CreateTask(Task task) {
+        task.setId(id);
         taskStorage.put(id, task);
         id++;
     }
@@ -47,6 +52,7 @@ public class Manager {
     }
 
     public void createEpic(Epic epic) {
+        epic.setId(id);
         epicStorage.put(id, epic);
         id++;
     }
@@ -57,10 +63,12 @@ public class Manager {
     }
 
     public void removeEpic(int id) {
-        for (int subId : epicStorage.get(id).getSubtasksId()) {
-            subtaskStorage.remove(subId);
+        if (epicStorage.containsKey(id)) {
+            for (int subId : epicStorage.get(id).getSubtasksId()) {
+                subtaskStorage.remove(subId);
+            }
+            epicStorage.remove(id);
         }
-        epicStorage.remove(id);
     }
 
     public Collection<Subtask> getAllEpicsSubtasks(int id) {
@@ -87,7 +95,6 @@ public class Manager {
 
     public Collection<Subtask> getAllSubtask() {
         return subtaskStorage.values();
-
     }
 
     public void removeAllSubtask(int relatedEpicId) {
@@ -103,6 +110,7 @@ public class Manager {
     }
 
     public void createSubTask(Subtask subtask) {
+        subtask.setId(id);
         subtaskStorage.put(id, subtask);
         epicStorage.get(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
         checkEpicStatus(epicStorage.get(subtask.getRelatedEpicId()));
@@ -116,9 +124,12 @@ public class Manager {
     }
 
     public void removeSubtask(int id) {
-        for (int i = 0; i < epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().size(); i++) {
-            if (epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().get(i) == id) {
-                epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()).getSubtasksId().remove(i);
+        for (int i = 0; i < epicStorage.get(subtaskStorage.get(id).
+                getRelatedEpicId()).getSubtasksId().size(); i++) {
+            if (epicStorage.get(subtaskStorage.get(id).
+                    getRelatedEpicId()).getSubtasksId().get(i) == id) {
+                epicStorage.get(subtaskStorage.get(id).
+                        getRelatedEpicId()).getSubtasksId().remove(i);
                 return;
             }
         }
