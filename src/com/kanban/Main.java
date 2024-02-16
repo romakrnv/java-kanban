@@ -21,7 +21,7 @@ public class Main {
         System.out.println(manager.getAllTasks().toString());
         manager.removeAllTask();
 
-        System.out.println("\nTest Epic and Subtask");
+        System.out.println("\nrTest Epic and Subtask");
         Epic epic1 = manager.createEpic(new Epic("epic name 1", "some text"));
         epic1.setDescription("change description");
         epic1.setName("change name");

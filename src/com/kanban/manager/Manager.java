@@ -26,9 +26,7 @@ public class Manager {
     }
 
     public Task createTask(Task task) {
-        task.setId(id);
-
-        id++;
+        task.setId(generateId());
         return task;
     }
 
@@ -54,9 +52,8 @@ public class Manager {
     }
 
     public Epic createEpic(Epic epic) {
-        epic.setId(id);
-        epicStorage.put(id, epic);
-        id++;
+        epic.setId(generateId());
+        epicStorage.put(epic.getId(), epic);
         return epic;
     }
 
@@ -113,11 +110,10 @@ public class Manager {
     }
 
     public Subtask createSubTask(Subtask subtask) {
-        subtask.setId(id);
-        subtaskStorage.put(id, subtask);
+        subtask.setId(generateId());
+        subtaskStorage.put(subtask.getId(), subtask);
         epicStorage.get(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
         checkEpicStatus(epicStorage.get(subtask.getRelatedEpicId()));
-        id++;
         return subtask;
     }
 
@@ -139,5 +135,9 @@ public class Manager {
         }
         checkEpicStatus(epicStorage.get(subtaskStorage.get(id).getRelatedEpicId()));
         subtaskStorage.remove(id);
+    }
+
+    private int generateId(){
+        return id++;
     }
 }
