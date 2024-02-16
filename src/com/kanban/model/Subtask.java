@@ -1,6 +1,4 @@
-package Task;
-
-import Enums.Status;
+package com.kanban.model;
 
 public class Subtask extends Task {
 
@@ -9,10 +7,6 @@ public class Subtask extends Task {
     public Subtask(String name, String description, int relatedEpicId) {
         super(name, description);
         this.relatedEpicId = relatedEpicId;
-    }
-
-    public Subtask(String name, String description, int id, Status status) {
-        super(name, description, id, status);
     }
 
     public void setRelatedEpicId(int relatedEpicId) {
@@ -25,7 +19,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Task.Subtask{" +
+        return "com.kanban.Task.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +

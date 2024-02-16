@@ -1,7 +1,6 @@
-package Task;
+package com.kanban.model;
 
-import Enums.Status;
-
+import com.kanban.model.enums.Status;
 
 public class Task {
     protected String name;
@@ -13,13 +12,6 @@ public class Task {
         this.name = name;
         this.description = description;
         status = Status.NEW;
-    }
-
-    public Task(String name, String description, int id, Status status) {
-        this.name = name;
-        this.description = description;
-        this.id = id;
-        this.status = status;
     }
 
     public int getId() {
@@ -46,9 +38,17 @@ public class Task {
         return description;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
-        return "Task.Task{" +
+        return "com.kanban.Task.com.kanban.Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +

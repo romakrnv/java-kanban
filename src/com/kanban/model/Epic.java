@@ -1,6 +1,4 @@
-package Task;
-
-import Enums.Status;
+package com.kanban.model;
 
 import java.util.ArrayList;
 
@@ -12,17 +10,13 @@ public class Epic extends Task {
         super(name, description);
     }
 
-    public Epic(String name, String description, int id) {
-        super(name, description, id, Status.NEW);
-    }
-
     public ArrayList<Integer> getSubtasksId() {
         return subtasksId;
     }
 
     @Override
     public String toString() {
-        return "Task.Epic{" +
+        return "com.kanban.Task.Epic{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +

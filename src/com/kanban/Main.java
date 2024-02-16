@@ -1,15 +1,19 @@
-import Enums.*;
-import Task.*;
+package com.kanban;
+
+import com.kanban.model.enums.*;
+import com.kanban.model.*;
+import com.kanban.manager.Manager;
 
 public class Main {
 
     public static void main(String[] args) {
         Manager manager = new Manager();
 
-        System.out.println("Test Task.Task");
-        manager.CreateTask(new Task("name1", "text"));
-        manager.CreateTask(new Task("nam2", "text2"));
-        manager.updateTask(new Task("changeName1", "text", 1, Status.IN_PROGRESS));
+        System.out.println("Test com.kanban.Task.com.kanban.Task");
+        Task task1 = manager.createTask(new Task("qew", "qwe"));
+        task1.setStatus(Status.IN_PROGRESS);
+        manager.createTask(new Task("nam2", "text2"));
+        manager.updateTask(task1);
 
         System.out.println(manager.getAllTasks().toString());
         System.out.println(manager.getTask(1));
@@ -17,22 +21,26 @@ public class Main {
         System.out.println(manager.getAllTasks().toString());
         manager.removeAllTask();
 
-        System.out.println("Test Task.Epic and Task.Subtask");
-        manager.createEpic(new Epic("epic name 1", "some text"));
+        System.out.println("\nTest com.kanban.Task.Epic and com.kanban.Task.Subtask");
+        Epic epic1 = manager.createEpic(new Epic("epic name 1", "some text"));
+        epic1.setDescription("change description");
+        epic1.setName("change name");
         manager.createEpic(new Epic("epic name 2", "some text2"));
-        manager.updateEpic(new Epic("change epic name 1", "some text", 3));
+        manager.updateEpic(epic1);
         System.out.println(manager.getAllEpic().toString());
         System.out.println(manager.getEpic(4).toString());
 
         manager.createSubTask(new Subtask("sub name", "text", 3));
         manager.createSubTask(new Subtask("sub name2", "text", 3));
-        manager.createSubTask(new Subtask("sub name", "text", 4));
-        manager.updateSubtask(new Subtask("sub name", "text", 7, Status.DONE));
+        Subtask subtask1 = manager.createSubTask(new Subtask("sub name", "text", 4));
+        subtask1.setStatus(Status.DONE);
+        manager.updateSubtask(subtask1);
 
         System.out.println(manager.getSubtask(7).toString());
         System.out.println(manager.getEpic(4).toString());
         System.out.println(manager.getAllEpicsSubtasks(3).toString());
         System.out.println(manager.getAllSubtask().toString());
+
 
         manager.removeEpic(4);
         System.out.println(manager.getAllSubtask().toString());

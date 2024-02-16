@@ -1,16 +1,17 @@
-import Enums.Status;
-import Task.*;
+package com.kanban.manager;
+
+import com.kanban.model.enums.Status;
+import com.kanban.model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class Manager {
-    public static int id = 1;
+    private static int id = 1;
     private final HashMap<Integer, Task> taskStorage = new HashMap<>();
     private final HashMap<Integer, Epic> epicStorage = new HashMap<>();
     private final HashMap<Integer, Subtask> subtaskStorage = new HashMap<>();
-
 
     public Collection<Task> getAllTasks() {
         return taskStorage.values();
@@ -24,10 +25,11 @@ public class Manager {
         return taskStorage.get(id);
     }
 
-    public void CreateTask(Task task) {
+    public Task createTask(Task task) {
         task.setId(id);
-        taskStorage.put(id, task);
+
         id++;
+        return task;
     }
 
     public void updateTask(Task task) {
@@ -51,10 +53,11 @@ public class Manager {
         return epicStorage.get(id);
     }
 
-    public void createEpic(Epic epic) {
+    public Epic createEpic(Epic epic) {
         epic.setId(id);
         epicStorage.put(id, epic);
         id++;
+        return epic;
     }
 
     public void updateEpic(Epic epic) {
@@ -109,12 +112,13 @@ public class Manager {
         return subtaskStorage.get(id);
     }
 
-    public void createSubTask(Subtask subtask) {
+    public Subtask createSubTask(Subtask subtask) {
         subtask.setId(id);
         subtaskStorage.put(id, subtask);
         epicStorage.get(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
         checkEpicStatus(epicStorage.get(subtask.getRelatedEpicId()));
         id++;
+        return subtask;
     }
 
     public void updateSubtask(Subtask subtask) {
