@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         Manager manager = new Manager();
 
-        System.out.println("Test com.kanban.Task.com.kanban.Task");
+        System.out.println("Test Task");
         Task task1 = manager.createTask(new Task("qew", "qwe"));
         task1.setStatus(Status.IN_PROGRESS);
         manager.createTask(new Task("nam2", "text2"));
@@ -21,7 +21,7 @@ public class Main {
         System.out.println(manager.getAllTasks().toString());
         manager.removeAllTask();
 
-        System.out.println("\nTest com.kanban.Task.Epic and com.kanban.Task.Subtask");
+        System.out.println("\nTest Epic and Subtask");
         Epic epic1 = manager.createEpic(new Epic("epic name 1", "some text"));
         epic1.setDescription("change description");
         epic1.setName("change name");
@@ -36,7 +36,7 @@ public class Main {
         subtask1.setStatus(Status.DONE);
         manager.updateSubtask(subtask1);
 
-        System.out.println(manager.getSubtask(7).toString());
+        System.out.println("\n" + manager.getSubtask(7).toString());
         System.out.println(manager.getEpic(4).toString());
         System.out.println(manager.getAllEpicsSubtasks(3).toString());
         System.out.println(manager.getAllSubtask().toString());

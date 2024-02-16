@@ -48,7 +48,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "com.kanban.Task.com.kanban.Task{" +
+        return "Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
