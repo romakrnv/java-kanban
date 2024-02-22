@@ -1,24 +1,26 @@
 package com.kanban;
 
+import com.kanban.manager.Managers;
+import com.kanban.manager.TaskManager;
 import com.kanban.model.enums.*;
 import com.kanban.model.*;
-import com.kanban.manager.Manager;
+import com.kanban.manager.InMemoryTaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        //InMemoryTaskManager manager = new InMemoryTaskManager();
+
+        TaskManager manager = Managers.getDefault();
 
         System.out.println("Test Task");
-        Task task1 = manager.createTask(new Task("qew", "qwe"));
+        Task task1 = manager.createTask(new Task("task1", "some text"));
         task1.setStatus(Status.IN_PROGRESS);
         manager.createTask(new Task("nam2", "text2"));
         manager.updateTask(task1);
-
         System.out.println(manager.getAllTasks().toString());
         System.out.println(manager.getTask(1));
         manager.removeTask(2);
-        System.out.println(manager.getAllTasks().toString());
         manager.removeAllTask();
 
         System.out.println("\nrTest Epic and Subtask");
