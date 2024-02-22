@@ -1,7 +1,6 @@
 package com.kanban.model;
 
 public class Subtask extends Task {
-
     private int relatedEpicId;
 
     public Subtask(String name, String description, int relatedEpicId) {

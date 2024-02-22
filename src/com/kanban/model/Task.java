@@ -3,9 +3,9 @@ package com.kanban.model;
 import com.kanban.model.enums.Status;
 
 public class Task {
+    protected int id;
     protected String name;
     protected String description;
-    protected int id;
     protected Status status;
 
     public Task(String name, String description) {

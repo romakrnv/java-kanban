@@ -4,13 +4,10 @@ import com.kanban.manager.Managers;
 import com.kanban.manager.TaskManager;
 import com.kanban.model.enums.*;
 import com.kanban.model.*;
-import com.kanban.manager.InMemoryTaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        //InMemoryTaskManager manager = new InMemoryTaskManager();
-
         TaskManager manager = Managers.getDefault();
 
         System.out.println("Test Task");
@@ -23,7 +20,7 @@ public class Main {
         manager.removeTask(2);
         manager.removeAllTask();
 
-        System.out.println("\nrTest Epic and Subtask");
+        System.out.println("\nTest Epic and Subtask");
         Epic epic1 = manager.createEpic(new Epic("epic name 1", "some text"));
         epic1.setDescription("change description");
         epic1.setName("change name");
@@ -46,11 +43,28 @@ public class Main {
 
         manager.removeEpic(4);
         System.out.println(manager.getAllSubtask().toString());
+        Subtask subtask6 = manager.getSubtask(6);
+        Subtask subtask5 = manager.getSubtask(5);
+        subtask5.setStatus(Status.DONE);
+        subtask6.setStatus(Status.DONE);
 
+        System.out.println("---" + manager.getAllEpicsSubtasks(3));
+        manager.updateSubtask(subtask6);
+        System.out.println("-----" + manager.getSubtask(6));
+        System.out.println("-----" + manager.getEpic(subtask6.getRelatedEpicId()));
         manager.removeSubtask(6);
+        manager.removeSubtask(5);
+        System.out.println(manager.getEpic(3));
         manager.removeAllSubtask(3);
         manager.removeAllEpic();
         manager.removeEpic(1);
+        manager.getEpic(3);
+        manager.getSubtask(7);
         System.out.println("Test done");
+        manager.removeAllTask();
+        manager.removeAllEpic();
+        System.out.println(manager.getAllEpic());
+        System.out.println(manager.getHistory());
+
     }
 }
