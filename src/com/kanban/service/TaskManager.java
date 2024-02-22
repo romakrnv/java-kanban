@@ -1,4 +1,4 @@
-package com.kanban.manager;
+package com.kanban.service;
 
 import com.kanban.model.Epic;
 import com.kanban.model.Subtask;

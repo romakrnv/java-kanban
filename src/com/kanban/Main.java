@@ -1,7 +1,7 @@
 package com.kanban;
 
-import com.kanban.manager.Managers;
-import com.kanban.manager.TaskManager;
+import com.kanban.service.Managers;
+import com.kanban.service.TaskManager;
 import com.kanban.model.enums.*;
 import com.kanban.model.*;
 

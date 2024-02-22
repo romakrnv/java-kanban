@@ -1,5 +1,6 @@
-package com.kanban.manager;
+package com.kanban.service;
 
+import com.kanban.storage.Storage;
 import com.kanban.model.enums.Status;
 import com.kanban.model.*;
 
@@ -75,6 +76,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
+        epic.setSubtasksId(storage.getEpic(epic.getId()).getSubtasksId());
         storage.getEpicStorage().put(epic.getId(), epic);
         checkEpicStatus(epic);
     }
@@ -120,11 +122,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask createSubTask(Subtask subtask) {
-        subtask.setId(generateId());
-        storage.add(subtask.getId(), subtask);
-        storage.getEpic(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
-        checkEpicStatus(storage.getEpic(subtask.getRelatedEpicId()));
-        return subtask;
+        if (storage.getEpic(subtask.getRelatedEpicId()) == null) {
+            return null;
+        } else {
+            subtask.setId(generateId());
+            storage.add(subtask.getId(), subtask);
+            storage.getEpic(subtask.getRelatedEpicId()).getSubtasksId().add(subtask.getId());
+            checkEpicStatus(storage.getEpic(subtask.getRelatedEpicId()));
+            return subtask;
+        }
     }
 
     @Override
@@ -156,15 +162,20 @@ public class InMemoryTaskManager implements TaskManager {
     private void checkEpicStatus(Epic epic) {
         if (epic.getSubtasksId().isEmpty()) {
             epic.setStatus(Status.NEW);
-            return;
         } else {
+            Status status = Status.NEW;
             for (int subId : epic.getSubtasksId()) {
                 if (storage.getSubtask(subId).getStatus() == Status.IN_PROGRESS) {
                     epic.setStatus(Status.IN_PROGRESS);
                     return;
                 }
+                status = storage.getSubtask(subId).getStatus();
+            }
+            if (status.equals(Status.NEW)) {
+                epic.setStatus(Status.NEW);
+            } else {
+                epic.setStatus(Status.DONE);
             }
         }
-        epic.setStatus(Status.DONE);
     }
 }
