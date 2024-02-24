@@ -1,19 +1,18 @@
 package com.kanban.model;
 
 public class Subtask extends Task {
-    private int relatedEpicId;
+    private int epicId;
 
-    public Subtask(String name, String description, int relatedEpicId) {
-        super(name, description);
-        this.relatedEpicId = relatedEpicId;
+    public Subtask(int epicId) {
+        this.epicId = epicId;
     }
 
-    public void setRelatedEpicId(int relatedEpicId) {
-        this.relatedEpicId = relatedEpicId;
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
-    public int getRelatedEpicId() {
-        return relatedEpicId;
+    public int getEpicId() {
+        return epicId;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class Subtask extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() + '\'' +
-                "relatedEpicId=" + relatedEpicId +
+                "relatedEpicId=" + epicId +
                 '}';
     }
 }

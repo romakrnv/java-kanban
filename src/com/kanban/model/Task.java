@@ -1,31 +1,23 @@
 package com.kanban.model;
 
-import com.kanban.model.enums.Status;
-
 import java.util.Objects;
 
 public class Task {
-    protected int id;
-    protected String name;
-    protected String description;
-    protected Status status;
-
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
-        status = Status.NEW;
-    }
+    private int id;
+    private String name;
+    private String description;
+    private TaskStatus taskStatus = TaskStatus.NEW;
 
     public int getId() {
         return id;
     }
 
-    public Status getStatus() {
-        return status;
+    public TaskStatus getStatus() {
+        return taskStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public void setId(int id) {
@@ -54,14 +46,18 @@ public class Task {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
-                ", status=" + status +
+                ", status=" + taskStatus +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Task task = (Task) o;
         return id == task.id;
     }

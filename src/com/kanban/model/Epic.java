@@ -1,21 +1,17 @@
 package com.kanban.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
+    private List<Integer> subtaskId = new ArrayList<>();
 
-    private ArrayList<Integer> subtasksId = new ArrayList<>();
-
-    public Epic(String name, String description) {
-        super(name, description);
+    public List<Integer> getSubtaskId() {
+        return subtaskId;
     }
 
-    public ArrayList<Integer> getSubtasksId() {
-        return subtasksId;
-    }
-
-    public void setSubtasksId(ArrayList<Integer> subtasksId) {
-        this.subtasksId = subtasksId;
+    public void setSubtaskId(List<Integer> subtaskId) {
+        this.subtaskId = subtaskId;
     }
 
     @Override
@@ -25,7 +21,7 @@ public class Epic extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
-                ", subtasksId.size=" + subtasksId.size() +
+                ", subtasksId.size=" + subtaskId.size() +
                 '}';
     }
 }

@@ -3,7 +3,7 @@ package com.kanban.service;
 import com.kanban.model.Epic;
 import com.kanban.model.Subtask;
 import com.kanban.model.Task;
-import com.kanban.model.enums.Status;
+import com.kanban.model.TaskStatus;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,13 +14,13 @@ class InMemoryTaskManagerTest {
     @BeforeAll
     static void beforeAll() {
         manager = Managers.getDefault();
-        Task task1 = new Task("task1", "description1");
-        Task task2 = new Task("task2", "description1");
-        Epic epic1 = new Epic("epic3", "description1");
-        Epic epic2 = new Epic("epic4", "description1");
-        Subtask subtask1 = new Subtask("epic5", "description1", 3);
-        Subtask subtask2 = new Subtask("epic6", "description1", 3);
-        Subtask subtask3 = new Subtask("epic7", "description1", 4);
+        Task task1 = new Task();
+        Task task2 = new Task();
+        Epic epic1 = new Epic();
+        Epic epic2 = new Epic();
+        Subtask subtask1 = new Subtask( 3);
+        Subtask subtask2 = new Subtask( 3);
+        Subtask subtask3 = new Subtask( 4);
         manager.createTask(task1);
         manager.createTask(task2);
         manager.createEpic(epic1);
@@ -37,7 +37,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getTask() {
-        Task expectedTask = new Task("", "");
+        Task expectedTask = new Task();
 
         expectedTask.setId(1);
 
@@ -46,7 +46,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createTask() {
-        Task task = new Task("", "");
+        Task task = new Task();
 
         manager.createTask(task);
 
@@ -55,16 +55,16 @@ class InMemoryTaskManagerTest {
 
     @Test
     void updateTask() {
-        Task task = new Task("", "");
+        Task task = new Task();
         task.setId(1);
-        task.setStatus(Status.IN_PROGRESS);
+        task.setStatus(TaskStatus.IN_PROGRESS);
         task.setName("new name");
         task.setDescription("new description");
         manager.updateTask(task);
 
         assertEquals("new name", manager.getTask(1).getName());
         assertEquals("new description", manager.getTask(1).getDescription());
-        assertEquals(Status.IN_PROGRESS, manager.getTask(1).getStatus());
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getTask(1).getStatus());
     }
 
     @Test
@@ -74,7 +74,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getEpic() {
-        Epic expectedEpic = new Epic("", "");
+        Epic expectedEpic = new Epic();
 
         expectedEpic.setId(3);
 
@@ -83,7 +83,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createEpic() {
-        Epic epic = new Epic("", "");
+        Epic epic = new Epic();
 
         manager.createEpic(epic);
 
@@ -92,7 +92,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void updateEpic() {
-        Epic epic = new Epic("", "");
+        Epic epic = new Epic();
         epic.setId(3);
         epic.setName("new name");
         epic.setDescription("new description");
@@ -114,7 +114,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getSubtask() {
-        Subtask expectedSubtask = new Subtask("", "", 3);
+        Subtask expectedSubtask = new Subtask(3);
         expectedSubtask.setId(5);
 
         assertEquals(expectedSubtask, manager.getSubtask(5));
@@ -122,7 +122,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createSubTask() {
-        Subtask subtask = new Subtask("", "", 3);
+        Subtask subtask = new Subtask(3);
 
         manager.createSubTask(subtask);
 
@@ -131,9 +131,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void updateSubtask() {
-        Subtask subtask = new Subtask("", "", 3);
+        Subtask subtask = new Subtask( 3);
         subtask.setId(5);
-        subtask.setStatus(Status.IN_PROGRESS);
+        subtask.setStatus(TaskStatus.IN_PROGRESS);
         subtask.setName("new name");
         subtask.setDescription("new description");
 
@@ -141,7 +141,7 @@ class InMemoryTaskManagerTest {
 
         assertEquals("new name", manager.getTask(5).getName());
         assertEquals("new description", manager.getTask(5).getDescription());
-        assertEquals(Status.IN_PROGRESS, manager.getTask(5).getStatus());
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getTask(5).getStatus());
     }
 
     @Test
@@ -164,29 +164,29 @@ class InMemoryTaskManagerTest {
 
     @Test
     void checkEpicStatus_whenAllSubtaskNew_thenEpicStatusNew() {
-        assertEquals(Status.NEW, manager.getEpic(3).getStatus());
+        assertEquals(TaskStatus.NEW, manager.getEpic(3).getStatus());
     }
 
     @Test
     void checkEpicStatus_whenUpdateSubtask_thenEpicStatusInProgress() {
         Subtask subtask = manager.getSubtask(5);
-        subtask.setStatus(Status.IN_PROGRESS);
+        subtask.setStatus(TaskStatus.IN_PROGRESS);
 
         manager.updateSubtask(subtask);
 
-        assertEquals(Status.IN_PROGRESS, manager.getEpic(3).getStatus());
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(3).getStatus());
     }
 
     @Test
     void checkEpicStatus_whenAllSubtaskDone_thenEpicStatusDone() {
         Subtask subtask1 = manager.getSubtask(5);
-        subtask1.setStatus(Status.DONE);
+        subtask1.setStatus(TaskStatus.DONE);
         Subtask subtask2 = manager.getSubtask(6);
-        subtask2.setStatus(Status.DONE);
+        subtask2.setStatus(TaskStatus.DONE);
         manager.updateSubtask(subtask1);
         manager.updateSubtask(subtask2);
 
-        assertEquals(Status.DONE, manager.getEpic(3).getStatus());
+        assertEquals(TaskStatus.DONE, manager.getEpic(3).getStatus());
     }
 
     @AfterAll
