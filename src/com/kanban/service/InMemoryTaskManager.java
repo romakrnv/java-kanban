@@ -163,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
         return id++;
     }
 
-    private void checkEpicStatus(Epic epic) {
+    public void checkEpicStatus(Epic epic) {
         if (epic.getSubtaskId().isEmpty()) {
             epic.setStatus(TaskStatus.NEW);
             return;

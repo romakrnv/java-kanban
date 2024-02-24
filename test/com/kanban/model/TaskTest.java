@@ -8,8 +8,10 @@ class TaskTest {
     @Test
     void checkEqualsForSameTaskId() {
         Task task1 = new Task();
+        task1.setName("one");
         task1.setId(1);
         Task task2 = new Task();
+        task2.setName("two");
         task2.setId(1);
 
         assertEquals(task1, task2);
