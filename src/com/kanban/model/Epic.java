@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private List<Integer> subtaskId = new ArrayList<>();
+    private List<Integer> subtasksIds = new ArrayList<>();
 
-    public List<Integer> getSubtaskId() {
-        return subtaskId;
+    public List<Integer> getSubtasksIds() {
+        return subtasksIds;
     }
 
-    public void setSubtaskId(List<Integer> subtaskId) {
-        this.subtaskId = subtaskId;
+    public void setSubtasksIds(List<Integer> subtasksIds) {
+        this.subtasksIds = subtasksIds;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class Epic extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +
                 ", status=" + getStatus() +
-                ", subtasksId.size=" + subtaskId.size() +
+                ", subtasksId.size=" + subtasksIds.size() +
                 '}';
     }
 }

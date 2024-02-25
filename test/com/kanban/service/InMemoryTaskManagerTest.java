@@ -114,7 +114,7 @@ class InMemoryTaskManagerTest {
         int taskId1 = 2;
         int taskId2 = 3;
         Mockito.when(storage.getEpic(epicId)).thenReturn(epic);
-        Mockito.when(epic.getSubtaskId()).thenReturn(List.of(taskId1, taskId2));
+        Mockito.when(epic.getSubtasksIds()).thenReturn(List.of(taskId1, taskId2));
 
         int expectedSize = manager.getAllEpicsSubtasks(epicId).size();
 
@@ -214,8 +214,8 @@ class InMemoryTaskManagerTest {
     @Test
     void removeAllSubtask() {
         Epic epic = new Epic();
-        epic.getSubtaskId().add(1);
-        epic.getSubtaskId().add(2);
+        epic.getSubtasksIds().add(1);
+        epic.getSubtasksIds().add(2);
         Mockito.when(storage.getEpic(0)).thenReturn(epic);
 
         manager.removeAllSubtask(0);
@@ -236,8 +236,8 @@ class InMemoryTaskManagerTest {
     void checkEpicStatus_whenAllSubtaskNew_thenEpicStatusNew() {
         Epic epic = new Epic();
         epic.setId(1);
-        epic.getSubtaskId().add(2);
-        epic.getSubtaskId().add(3);
+        epic.getSubtasksIds().add(2);
+        epic.getSubtasksIds().add(3);
         Subtask subtask1 = new Subtask(1);
         subtask1.setId(2);
         Subtask subtask2 = new Subtask(1);
@@ -255,8 +255,8 @@ class InMemoryTaskManagerTest {
     void checkEpicStatus_whenDifferentSubtasksStatus_thenEpicStatusInProgress() {
         Epic epic = new Epic();
         epic.setId(1);
-        epic.getSubtaskId().add(2);
-        epic.getSubtaskId().add(3);
+        epic.getSubtasksIds().add(2);
+        epic.getSubtasksIds().add(3);
         Subtask subtask1 = new Subtask(1);
         subtask1.setId(2);
         Subtask subtask2 = new Subtask(1);
@@ -275,8 +275,8 @@ class InMemoryTaskManagerTest {
     void checkEpicStatus_whenAllSubtaskDone_thenEpicStatusDone() {
         Epic epic = new Epic();
         epic.setId(1);
-        epic.getSubtaskId().add(2);
-        epic.getSubtaskId().add(3);
+        epic.getSubtasksIds().add(2);
+        epic.getSubtasksIds().add(3);
         Subtask subtask1 = new Subtask(1);
         subtask1.setId(2);
         Subtask subtask2 = new Subtask(1);
