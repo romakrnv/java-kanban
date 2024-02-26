@@ -1,37 +1,38 @@
 package com.kanban.service;
 
 import com.kanban.model.Task;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class InMemoryHistoryManagerTest {
-    private InMemoryHistoryManager inMemoryHistoryManager;
+    private HistoryManager historyManager;
 
     @BeforeEach
     void setUp() {
-        inMemoryHistoryManager = new InMemoryHistoryManager();
+        historyManager = new InMemoryHistoryManager();
     }
 
     @Test
     void add_whenOneRecordExist_thenReturn2() {
-        inMemoryHistoryManager.getHistory().add(new Task());
+        historyManager.getHistory().add(new Task());
 
-        inMemoryHistoryManager.add(new Task());
-        int actualCount = inMemoryHistoryManager.getHistory().size();
+        historyManager.add(new Task());
+        int actualCount = historyManager.getHistory().size();
 
-        Assertions.assertEquals(2, actualCount);
+        assertEquals(2, actualCount);
     }
 
     @Test
     void add_whenRecordsMoreThanMax_thenReturn10() {
-        for(int i = 0; i < 10; i++){
-            inMemoryHistoryManager.add(new Task());
+        for (int i = 0; i < 10; i++) {
+            historyManager.add(new Task());
         }
 
-        inMemoryHistoryManager.add(new Task());
-        int actualCount = inMemoryHistoryManager.getHistory().size();
+        historyManager.add(new Task());
+        int actualCount = historyManager.getHistory().size();
 
-        Assertions.assertEquals(10, actualCount);
+        assertEquals(10, actualCount);
     }
 }

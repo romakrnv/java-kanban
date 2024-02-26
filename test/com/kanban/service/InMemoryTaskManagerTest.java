@@ -7,13 +7,14 @@ import com.kanban.model.TaskStatus;
 import com.kanban.storage.Storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class InMemoryTaskManagerTest {
     private InMemoryTaskManager manager;
@@ -28,10 +29,10 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getAllTasks() {
+    void getAllTasks_when2TasksExist_thenReturnSize2() {
         Task task1 = new Task();
         Task task2 = new Task();
-        Mockito.when(storage.getTasks()).thenReturn(List.of(task1, task2));
+        when(storage.getTasks()).thenReturn(List.of(task1, task2));
 
         int expectedSize = 2;
 
@@ -39,25 +40,27 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getTask() {
+    void getTask_whenTaskExist_thenReturnTask() {
         int taskId = 1;
         Task expectedTask = new Task();
-        Mockito.when(storage.getTask(taskId)).thenReturn(expectedTask);
+        when(storage.getTask(taskId)).thenReturn(expectedTask);
 
         Task actualTask = manager.getTask(taskId);
 
         assertEquals(expectedTask, actualTask);
+        verify(historyManager).add(expectedTask);
     }
 
     @Test
-    void createTask() {
+    void createTask_whenNewTask_thenTaskNotNull() {
         Task task = manager.createTask(new Task());
 
         assertNotNull(task);
+        verify(storage).add(task.getId(), task);
     }
 
     @Test
-    void updateTask() {
+    void updateTask_whenNewTask_thenStorageAddCallOneTime() {
         Task task = new Task();
         task.setId(1);
         task.setStatus(TaskStatus.IN_PROGRESS);
@@ -65,56 +68,59 @@ class InMemoryTaskManagerTest {
 
         manager.updateTask(task);
 
-        Mockito.verify(storage).add(1, task);
+        verify(storage).add(1, task);
     }
 
     @Test
-    void getAllEpic() {
+    void getAllEpics_when2EpicsExist_thenReturnSize2() {
         Epic epic1 = new Epic();
         Epic epic2 = new Epic();
-        Mockito.when(storage.getEpics()).thenReturn(List.of(epic1, epic2));
+        when(storage.getEpics()).thenReturn(List.of(epic1, epic2));
 
-        int actualSize = manager.getAllEpic().size();
+        int actualSize = manager.getAllEpics().size();
 
         assertEquals(2, actualSize);
     }
 
     @Test
-    void getEpic() {
+    void getEpic_whenEpicExist_thenReturnEpic() {
         int epicId = 1;
         Epic expectedEpic = new Epic();
-        Mockito.when(storage.getEpic(epicId)).thenReturn(expectedEpic);
+        when(storage.getEpic(epicId)).thenReturn(expectedEpic);
 
         Epic actualEpic = manager.getEpic(epicId);
 
         assertEquals(expectedEpic, actualEpic);
+        verify(historyManager).add(expectedEpic);
     }
 
     @Test
-    void createEpic() {
+    void createEpic_whenNewEpic_thenEpicNotNull() {
         Epic epic = manager.createEpic(new Epic());
 
         assertNotNull(epic);
+        assertEquals(1, epic.getId());
+        verify(storage).add(epic.getId(), epic);
     }
 
     @Test
-    void updateEpic() {
+    void updateEpic_whenNewEpic_thenStorageAddCallOneTime() {
         Epic epic = new Epic();
-        Mockito.when(storage.getEpic(0)).thenReturn(epic);
+        when(storage.getEpic(0)).thenReturn(epic);
 
         manager.updateEpic(epic);
 
-        Mockito.verify(storage).add(0, epic);
+        verify(storage).add(0, epic);
     }
 
     @Test
-    void getAllEpicsSubtasks() {
+    void getAllEpicsSubtasks_when2SubtaskExist_ThenReturnSize2() {
         Epic epic = mock(Epic.class);
         int epicId = 1;
         int taskId1 = 2;
         int taskId2 = 3;
-        Mockito.when(storage.getEpic(epicId)).thenReturn(epic);
-        Mockito.when(epic.getSubtasksIds()).thenReturn(List.of(taskId1, taskId2));
+        when(storage.getEpic(epicId)).thenReturn(epic);
+        when(epic.getSubtasksIds()).thenReturn(List.of(taskId1, taskId2));
 
         int expectedSize = manager.getAllEpicsSubtasks(epicId).size();
 
@@ -122,114 +128,126 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getAllSubtask() {
+    void getAllSubtasks_when2SubtasksExist_thenReturnSize2() {
         Subtask subtask1 = new Subtask(1);
         Subtask subtask2 = new Subtask(1);
-        Mockito.when(storage.getSubtasks()).thenReturn(List.of(subtask1, subtask2));
+        when(storage.getSubtasks()).thenReturn(List.of(subtask1, subtask2));
 
-        int expectedSize = manager.getAllSubtask().size();
+        int expectedSize = manager.getAllSubtasks().size();
 
-        assertEquals(expectedSize, manager.getAllSubtask().size());
+        assertEquals(expectedSize, manager.getAllSubtasks().size());
     }
 
     @Test
-    void getSubtask() {
+    void getSubtask_whenSubtaskExist_thenReturnSubtask() {
         Subtask expectedSubtask = new Subtask(1);
         int subtaskId = 2;
-        Mockito.when(storage.getSubtask(subtaskId)).thenReturn(expectedSubtask);
+        when(storage.getSubtask(subtaskId)).thenReturn(expectedSubtask);
 
         Subtask actualSubtask = manager.getSubtask(subtaskId);
 
         assertEquals(expectedSubtask, actualSubtask);
+        verify(historyManager).add(expectedSubtask);
     }
 
     @Test
-    void createSubTask() {
+    void createSubTask_whenNewSubtask_thenSubtaskNotNull() {
         Subtask subtask = new Subtask(2);
-        subtask.setId(1);
         Epic epic = new Epic();
+        epic.getSubtasksIds().add(3);
         epic.setId(2);
-        Mockito.when(storage.getEpic(2)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(1)).thenReturn(subtask);
+        when(storage.getEpic(2)).thenReturn(epic);
+        when(storage.getSubtask(3)).thenReturn(subtask);
 
-        Subtask actualSubtask = manager.createSubTask(new Subtask(epic.getId()));
+        Subtask actualSubtask = manager.createSubtask(subtask);
 
         assertNotNull(actualSubtask);
+        verify(storage).add(subtask.getId(), subtask);
     }
 
     @Test
-    void updateSubtask() {
+    void updateSubtask_whenNewSubtask_thenStorageAddCallOneTime() {
         Subtask subtask = new Subtask(2);
         subtask.setId(1);
         subtask.setName("qwe");
         Epic epic = new Epic();
         epic.setId(2);
-        Mockito.when(storage.getEpic(2)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(1)).thenReturn(subtask);
+        when(storage.getEpic(2)).thenReturn(epic);
+        when(storage.getSubtask(1)).thenReturn(subtask);
 
         manager.updateSubtask(subtask);
 
-        Mockito.verify(storage).add(1, subtask);
+        verify(storage).add(1, subtask);
     }
 
     @Test
-    void getHistory() {
+    void getHistory_when3RecordsExist_thenReturnHistorySize3() {
         Task task = new Task();
         Epic epic = new Epic();
         Subtask subtask = new Subtask(0);
-        Mockito.when(historyManager.getHistory()).thenReturn(List.of(task, epic, subtask));
+        when(historyManager.getHistory()).thenReturn(List.of(task, epic, subtask));
 
         int actualHistorySize = manager.getHistory().size();
 
         assertEquals(3, actualHistorySize);
+        verify(historyManager).getHistory();
     }
 
     @Test
-    void removeTask() {
+    void removeTask_thenStorageCallRemove() {
         manager.removeTask(1);
 
-        Mockito.verify(storage).removeTask(1);
+        verify(storage).removeTask(1);
     }
 
     @Test
-    void removeAllTask() {
-        manager.removeAllTask();
+    void removeAllTasks_thenStorageCallClear() {
+        manager.removeAllTasks();
 
-        Mockito.verify(storage).clearTasks();
+        verify(storage).clearTasks();
     }
 
     @Test
-    void removeSubtask() {
+    void removeSubtask_whenSubtaskExist_thenStorageCallRemoveSubtaskOneTime() {
         Subtask subtask = new Subtask(0);
         subtask.setId(0);
         Epic epic = new Epic();
-        Mockito.when(storage.getEpic(0)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(0)).thenReturn(subtask);
+        when(storage.getEpic(0)).thenReturn(epic);
+        when(storage.getSubtask(0)).thenReturn(subtask);
 
         manager.removeSubtask(0);
 
-        Mockito.verify(storage).removeSubtask(0);
+        verify(storage).removeSubtask(0);
     }
 
     @Test
-    void removeAllSubtask() {
+    void removeAllSubtasks_when2SubtasksExistUnderEpic0_thenStorageCallRemoveSubtasksTwoTimes() {
         Epic epic = new Epic();
         epic.getSubtasksIds().add(1);
         epic.getSubtasksIds().add(2);
-        Mockito.when(storage.getEpic(0)).thenReturn(epic);
+        when(storage.getEpic(0)).thenReturn(epic);
 
-        manager.removeAllSubtask(0);
+        manager.removeAllSubtasks(0);
 
-        Mockito.verify(storage).removeSubtask(2);
+        verify(storage).removeSubtask(1);
+        verify(storage).removeSubtask(2);
     }
 
     @Test
-    void removeEpic() {
-        Mockito.when(storage.getEpic(0)).thenReturn(new Epic());
+    void removeEpic_thenStorageCallRemoveOneTime() {
+        when(storage.getEpic(0)).thenReturn(new Epic());
 
         manager.removeEpic(0);
 
-        Mockito.verify(storage).removeEpic(0);
+        verify(storage).removeEpic(0);
+    }
+
+    @Test
+    void removeAllEpics_thenStorageCallClearForEpicsAndSubtasks() {
+        manager.removeAllEpics();
+
+        verify(storage).clearEpics();
+        verify(storage).clearSubtasks();
     }
 
     @Test
@@ -242,9 +260,9 @@ class InMemoryTaskManagerTest {
         subtask1.setId(2);
         Subtask subtask2 = new Subtask(1);
         subtask2.setId(3);
-        Mockito.when(storage.getEpic(1)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(2)).thenReturn(subtask1);
-        Mockito.when(storage.getSubtask(3)).thenReturn(subtask2);
+        when(storage.getEpic(1)).thenReturn(epic);
+        when(storage.getSubtask(2)).thenReturn(subtask1);
+        when(storage.getSubtask(3)).thenReturn(subtask2);
 
         manager.updateEpic(epic);
 
@@ -262,9 +280,9 @@ class InMemoryTaskManagerTest {
         Subtask subtask2 = new Subtask(1);
         subtask2.setId(3);
         subtask1.setStatus(TaskStatus.DONE);
-        Mockito.when(storage.getEpic(1)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(2)).thenReturn(subtask1);
-        Mockito.when(storage.getSubtask(3)).thenReturn(subtask2);
+        when(storage.getEpic(1)).thenReturn(epic);
+        when(storage.getSubtask(2)).thenReturn(subtask1);
+        when(storage.getSubtask(3)).thenReturn(subtask2);
 
         manager.updateEpic(epic);
 
@@ -283,14 +301,12 @@ class InMemoryTaskManagerTest {
         subtask2.setId(3);
         subtask1.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.DONE);
-        Mockito.when(storage.getEpic(1)).thenReturn(epic);
-        Mockito.when(storage.getSubtask(2)).thenReturn(subtask1);
-        Mockito.when(storage.getSubtask(3)).thenReturn(subtask2);
+        when(storage.getEpic(1)).thenReturn(epic);
+        when(storage.getSubtask(2)).thenReturn(subtask1);
+        when(storage.getSubtask(3)).thenReturn(subtask2);
 
         manager.updateEpic(epic);
 
         assertEquals(TaskStatus.DONE, manager.getEpic(1).getStatus());
     }
-
-
 }

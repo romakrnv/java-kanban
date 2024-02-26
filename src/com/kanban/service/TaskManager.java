@@ -10,7 +10,7 @@ import java.util.List;
 public interface TaskManager {
     Collection<Task> getAllTasks();
 
-    void removeAllTask();
+    void removeAllTasks();
 
     Task getTask(int id);
 
@@ -20,9 +20,9 @@ public interface TaskManager {
 
     void removeTask(int id);
 
-    Collection<Epic> getAllEpic();
+    Collection<Epic> getAllEpics();
 
-    void removeAllEpic();
+    void removeAllEpics();
 
     Epic getEpic(int id);
 
@@ -34,13 +34,13 @@ public interface TaskManager {
 
     Collection<Subtask> getAllEpicsSubtasks(int id);
 
-    Collection<Subtask> getAllSubtask();
+    Collection<Subtask> getAllSubtasks();
 
-    void removeAllSubtask(int relatedEpicId);
+    void removeAllSubtasks(int relatedEpicId);
 
     Subtask getSubtask(int id);
 
-    Subtask createSubTask(Subtask subtask);
+    Subtask createSubtask(Subtask subtask);
 
     void updateSubtask(Subtask subtask);
 

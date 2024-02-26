@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void removeAllTask() {
+    public void removeAllTasks() {
         storage.clearTasks();
     }
 
@@ -54,12 +54,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Epic> getAllEpic() {
+    public Collection<Epic> getAllEpics() {
         return storage.getEpics();
     }
 
     @Override
-    public void removeAllEpic() {
+    public void removeAllEpics() {
         storage.clearEpics();
         storage.clearSubtasks();
     }
@@ -97,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Collection<Subtask> getAllEpicsSubtasks(int id) {
-        ArrayList<Subtask> subtasks = new ArrayList<>();
+        List<Subtask> subtasks = new ArrayList<>();
         for (int subId : storage.getEpic(id).getSubtasksIds()) {
             subtasks.add(storage.getSubtask(subId));
         }
@@ -105,17 +105,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Subtask> getAllSubtask() {
+    public Collection<Subtask> getAllSubtasks() {
         return storage.getSubtasks();
     }
 
     @Override
-    public void removeAllSubtask(int relatedEpicId) {
-        for (int subId : storage.getEpic(relatedEpicId).getSubtasksIds()) {
+    public void removeAllSubtasks(int epicId) {
+        Epic epic = storage.getEpic(epicId);
+        for (int subId : epic.getSubtasksIds()) {
             storage.removeSubtask(subId);
         }
-        storage.getEpic(relatedEpicId).getSubtasksIds().clear();
-        storage.getEpic(relatedEpicId).setStatus(TaskStatus.NEW);
+        epic.getSubtasksIds().clear();
+        epic.setStatus(TaskStatus.NEW);
     }
 
     @Override
@@ -125,16 +126,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask createSubTask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) {
         if (storage.getEpic(subtask.getEpicId()) == null) {
             return null;
-        } else {
-            subtask.setId(generateId());
-            storage.add(subtask.getId(), subtask);
-            storage.getEpic(subtask.getEpicId()).getSubtasksIds().add(subtask.getId());
-            checkEpicStatus(storage.getEpic(subtask.getEpicId()));
-            return subtask;
         }
+        subtask.setId(generateId());
+        storage.add(subtask.getId(), subtask);
+        storage.getEpic(subtask.getEpicId()).getSubtasksIds().add(subtask.getId());
+        checkEpicStatus(storage.getEpic(subtask.getEpicId()));
+        return subtask;
     }
 
     @Override
