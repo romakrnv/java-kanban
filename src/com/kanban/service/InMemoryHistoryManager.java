@@ -8,81 +8,62 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> history = new HashMap<>();
+    private final Map<Integer, Node> historyIndex = new HashMap<>();
     private Node head;
     private Node tail;
-    private int size = 0;
-
-    private static class Node {
-        Node next;
-        Node prev;
-        Task task;
-
-        public Node(Node prev, Task task, Node next) {
-            this.next = next;
-            this.task = task;
-            this.prev = prev;
-        }
-    }
 
     private void linkLast(Task task) {
         Node oldTail = tail;
-        Node newNode = new Node(oldTail, task, null);
+        Node newNode = new Node(task);
+        newNode.prev = oldTail;
         tail = newNode;
         if (oldTail == null) {
             head = newNode;
         } else {
             oldTail.next = newNode;
         }
-        size++;
     }
 
     @Override
     public void add(Task task) {
-        if (history.containsKey(task.getId())) {
+        if (historyIndex.containsKey(task.getId())) {
             remove(task.getId());
-            history.remove(task.getId());
+            historyIndex.remove(task.getId());
         }
         linkLast(task);
-        history.put(task.getId(), tail);
+        historyIndex.put(task.getId(), tail);
     }
 
     public void remove(int id) {
-        if (history.containsKey(id)) {
-            if (head == null) {
-                return;
-            }
-
-            if (head == tail) {
-                head = null;
-                tail = null;
-                size--;
-                return;
-            }
-
-            Node node = history.get(id);
-            if (node == head) {
-                head.next.prev = null;
-                head = head.next;
-                size--;
-                return;
-            }
-            if (node == tail) {
-                tail.prev.next = null;
-                tail = tail.prev;
-                size--;
-                return;
-            }
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
-            node.prev = null;
-            node.next = null;
-            size--;
+        if (!historyIndex.containsKey(id)) {
+            return;
         }
-    }
 
-    public int getSize() {
-        return size;
+        if (head == null) {
+            return;
+        }
+
+        if (head == tail) {
+            head = null;
+            tail = null;
+            return;
+        }
+
+        Node node = historyIndex.get(id);
+        if (node == head) {
+            head.next.prev = null;
+            head = head.next;
+            return;
+        }
+        if (node == tail) {
+            tail.prev.next = null;
+            tail = tail.prev;
+            return;
+        }
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
     }
 
     private List<Task> getTasks() {
@@ -98,5 +79,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         return getTasks();
+    }
+
+    private static class Node {
+        Node next;
+        Node prev;
+        Task task;
+
+        public Node(Task task) {
+            this.task = task;
+        }
     }
 }
