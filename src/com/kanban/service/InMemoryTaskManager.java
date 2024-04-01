@@ -32,6 +32,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
+        if (storage.getTask(id) == null) {
+            return null;
+        }
         historyManager.add(storage.getTask(id));
         return storage.getTask(id);
     }
