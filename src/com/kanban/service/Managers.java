@@ -2,9 +2,16 @@ package com.kanban.service;
 
 import com.kanban.storage.Storage;
 
+import java.io.File;
+
 public class Managers {
     public static TaskManager getDefault() {
-        return getInMemoryTaskManager();
+        return getFileBackedTaskManager();
+    }
+
+    public static FileBackedTaskManager getFileBackedTaskManager(){
+        return new FileBackedTaskManager(getDefaultHistory(), getDefaultStorage(),
+                new File("/Users/roman/IdeaProjects/java-kanban/src/com/kanban/resources/save.csv"));
     }
 
     public static InMemoryTaskManager getInMemoryTaskManager() {

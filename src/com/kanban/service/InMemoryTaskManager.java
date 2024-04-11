@@ -7,13 +7,12 @@ import com.kanban.storage.Storage;
 import com.kanban.model.TaskStatus;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private static int id = 1;
-    private final HistoryManager historyManager;
-    private final Storage storage;
+    private int id = 1;
+    public final HistoryManager historyManager;
+    protected final Storage storage;
 
     public InMemoryTaskManager(HistoryManager historyManager, Storage storage) {
         this.historyManager = historyManager;
@@ -21,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return storage.getTasks();
     }
 
@@ -40,8 +39,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(Task task) {
-        task.setId(generateId());
+    public Task addTask(Task task) {
+        if (task.getId() == 0) {
+            task.setId(generateId());
+        }
         storage.add(task.getId(), task);
         return task;
     }
@@ -57,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return storage.getEpics();
     }
 
@@ -74,8 +75,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic createEpic(Epic epic) {
-        epic.setId(generateId());
+    public Epic addEpic(Epic epic) {
+        if (epic.getId() == 0) {
+            epic.setId(generateId());
+        }
         storage.add(epic.getId(), epic);
         return epic;
     }
@@ -99,7 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Subtask> getAllEpicsSubtasks(int id) {
+    public List<Subtask> getAllEpicsSubtasks(int id) {
         List<Subtask> subtasks = new ArrayList<>();
         for (int subId : storage.getEpic(id).getSubtasksIds()) {
             subtasks.add(storage.getSubtask(subId));
@@ -108,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Collection<Subtask> getAllSubtasks() {
+    public List<Subtask> getAllSubtasks() {
         return storage.getSubtasks();
     }
 
@@ -129,11 +132,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask) {
+    public Subtask addSubtask(Subtask subtask) {
         if (storage.getEpic(subtask.getEpicId()) == null) {
             return null;
         }
-        subtask.setId(generateId());
+        if (subtask.getId() == 0) {
+            subtask.setId(generateId());
+        }
         storage.add(subtask.getId(), subtask);
         storage.getEpic(subtask.getEpicId()).getSubtasksIds().add(subtask.getId());
         checkEpicStatus(storage.getEpic(subtask.getEpicId()));

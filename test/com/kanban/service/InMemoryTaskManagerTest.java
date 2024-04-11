@@ -53,7 +53,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createTask_whenNewTask_thenTaskNotNull() {
-        Task task = manager.createTask(new Task());
+        Task task = manager.addTask(new Task());
 
         assertNotNull(task);
         verify(storage).add(task.getId(), task);
@@ -96,7 +96,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createEpic_whenNewEpic_thenEpicNotNull() {
-        Epic epic = manager.createEpic(new Epic());
+        Epic epic = manager.addEpic(new Epic());
 
         assertNotNull(epic);
         assertEquals(1, epic.getId());
@@ -156,10 +156,11 @@ class InMemoryTaskManagerTest {
         Epic epic = new Epic();
         epic.getSubtasksIds().add(3);
         epic.setId(2);
+        subtask.setId(3);
         when(storage.getEpic(2)).thenReturn(epic);
         when(storage.getSubtask(3)).thenReturn(subtask);
 
-        Subtask actualSubtask = manager.createSubtask(subtask);
+        Subtask actualSubtask = manager.addSubtask(subtask);
 
         assertNotNull(actualSubtask);
         verify(storage).add(subtask.getId(), subtask);
