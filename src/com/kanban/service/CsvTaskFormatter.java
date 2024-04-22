@@ -8,7 +8,7 @@ import com.kanban.model.TaskStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVTaskFormatter {
+public class CsvTaskFormatter {
     public static String createDataToSave(List<Task> tasks, List<Epic> epics, List<Subtask> subtasks, List<Task> history) {
         StringBuilder dataToSave = new StringBuilder();
         dataToSave.append("type,name,description,id,status,epicId\n");
@@ -77,22 +77,22 @@ public class CSVTaskFormatter {
                 return subtask;
             }
             default: {
-                return null;
+                throw new RuntimeException("unexpected task format");
             }
         }
     }
 
     static List<Integer> historyFromString(String value) {
+        String regex = "^\\d+(,\\d+)*,$";
         List<Integer> data = new ArrayList<>();
         if (value.equals("History is empty") || value.isBlank()) {
             return data;
         }
-        try {
-            for (String id : value.split(",")) {
-                data.add(Integer.parseInt(id));
-            }
-        } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+        if (!value.matches(regex)) { //check that value matches the format 1,2,3,
+            return data;
+        }
+        for (String id : value.split(",")) {
+            data.add(Integer.parseInt(id));
         }
         return data;
     }

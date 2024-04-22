@@ -13,7 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import static com.kanban.service.CSVTaskFormatter.*;
+import static com.kanban.service.CsvTaskFormatter.createDataToSave;
+import static com.kanban.service.CsvTaskFormatter.historyFromString;
+import static com.kanban.service.CsvTaskFormatter.fromString;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -31,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static TaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager manager = new FileBackedTaskManager(new InMemoryHistoryManager(), new Storage(), file);
         try {
             String dataFromFile = Files.readString(file.toPath());
@@ -63,7 +65,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            throw new ManagerSaveException("File loading error\n");
         }
         return manager;
     }

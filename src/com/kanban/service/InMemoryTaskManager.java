@@ -11,7 +11,7 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id = 1;
-    public final HistoryManager historyManager;
+    protected final HistoryManager historyManager;
     protected final Storage storage;
 
     public InMemoryTaskManager(HistoryManager historyManager, Storage storage) {
