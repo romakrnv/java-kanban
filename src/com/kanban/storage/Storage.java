@@ -4,8 +4,9 @@ import com.kanban.model.Epic;
 import com.kanban.model.Subtask;
 import com.kanban.model.Task;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Storage {
@@ -37,16 +38,16 @@ public class Storage {
         return subtasks.get(id);
     }
 
-    public Collection<Task> getTasks() {
-        return tasks.values();
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
-    public Collection<Epic> getEpics() {
-        return epics.values();
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
 
-    public Collection<Subtask> getSubtasks() {
-        return subtasks.values();
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     public void clearTasks() {
