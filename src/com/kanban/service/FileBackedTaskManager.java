@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.kanban.service.CsvTaskFormatter.createDataToSave;
@@ -27,13 +28,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            bw.write(createDataToSave(getAllTasks(), getAllEpics(), getAllSubtasks(), getHistory()));
+            List<Task> dataToSave = new ArrayList<>();
+            dataToSave.addAll(getAllTasks());
+            dataToSave.addAll(getAllEpics());
+            dataToSave.addAll(getAllSubtasks());
+            bw.write(createDataToSave(dataToSave, getHistory()));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public static TaskManager loadFromFile(File file) throws ManagerSaveException {
+    public static TaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(new InMemoryHistoryManager(), new Storage(), file);
         try {
             String dataFromFile = Files.readString(file.toPath());

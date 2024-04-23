@@ -9,20 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CsvTaskFormatter {
-    public static String createDataToSave(List<Task> tasks, List<Epic> epics, List<Subtask> subtasks, List<Task> history) {
+    public static String createDataToSave(List<Task> tasks, List<Task> history) {
         StringBuilder dataToSave = new StringBuilder();
         dataToSave.append("type,name,description,id,status,epicId\n");
 
         for (Task task : tasks) {
             dataToSave.append(task.toString()).append("\n");
-        }
-
-        for (Epic epic : epics) {
-            dataToSave.append(epic.toString()).append("\n");
-        }
-
-        for (Subtask subtask : subtasks) {
-            dataToSave.append(subtask.toString()).append("\n");
         }
 
         dataToSave.append("\n");

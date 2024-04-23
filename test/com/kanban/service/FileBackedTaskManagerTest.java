@@ -28,7 +28,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void loadFromFile_whenFileExist_thenReturnTasks() throws ManagerSaveException {
+    void loadFromFile_whenFileExist_thenReturnTasks() {
         TaskManager managerLoadedFromFile = FileBackedTaskManager
                 .loadFromFile(new File("resources/test.csv"));
 
@@ -42,7 +42,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void loadFromFile_whenFileIsEmpty_thenReturnSize0() throws ManagerSaveException {
+    void loadFromFile_whenFileIsEmpty_thenReturnSize0() {
         TaskManager managerWithEmptyFile = FileBackedTaskManager
                 .loadFromFile(new File("resources/emptyfile.csv"));
 
