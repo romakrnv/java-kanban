@@ -1,7 +1,5 @@
 package com.kanban.model;
 
-import java.time.format.DateTimeFormatter;
-
 public class Subtask extends Task {
     private int epicId;
 

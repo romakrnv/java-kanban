@@ -47,7 +47,7 @@ public class CsvTaskFormatter {
         Duration duration = Duration.ofMinutes(Integer.parseInt(data[5]));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         LocalDateTime startTime = null;
-        if(!data[6].equals("null")){
+        if (!data[6].equals("null")) {
             startTime = LocalDateTime.parse(data[6], formatter);
         }
 

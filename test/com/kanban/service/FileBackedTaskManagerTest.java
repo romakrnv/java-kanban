@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -22,9 +24,28 @@ class FileBackedTaskManagerTest {
     void setUp() {
         fileManager = new FileBackedTaskManager(new InMemoryHistoryManager(),
                 new Storage(), new File("resources/test.csv"));
-        fileManager.addTask(new Task());
-        fileManager.addEpic(new Epic());
-        fileManager.addSubtask(new Subtask(2));
+        Task task = new Task();
+        task.setName("New Task");
+        task.setDescription("text");
+        task.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 0));
+        task.setDuration(Duration.ofMinutes(20));
+
+        Epic epic = new Epic();
+        epic.setName("New Epic");
+        epic.setDescription("text2");
+        epic.setStartTime(LocalDateTime.of(2024, 4, 24, 12, 0));
+        epic.setDuration(Duration.ofMinutes(10));
+
+        Subtask subtask = new Subtask(2);
+        subtask.setName("New Subtask");
+        subtask.setDescription("text2");
+        subtask.setStartTime(LocalDateTime.of(2024, 4, 24, 13, 0));
+        subtask.setDuration(Duration.ofMinutes(20));
+
+
+        fileManager.addTask(task);
+        fileManager.addEpic(epic);
+        fileManager.addSubtask(subtask);
     }
 
     @Test
@@ -71,6 +92,7 @@ class FileBackedTaskManagerTest {
                 fileTaskSize++;
             }
         }
+
         assertEquals(mapSize, fileTaskSize, "Size doesn't match");
     }
 }

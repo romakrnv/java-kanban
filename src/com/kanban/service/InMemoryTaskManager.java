@@ -269,7 +269,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (currentTask.getStartTime() == null) {
             return;
         }
-        Optional<Task> intersectedTask = prioritizedTasks.stream().filter(task -> isTasksIntersected(currentTask, task)).findFirst();
+        Optional<Task> intersectedTask = prioritizedTasks.stream()
+                .filter(task -> isTasksIntersected(currentTask, task)).findFirst();
         if (intersectedTask.isPresent()) {
             throw new ManagerSaveException("error:Task intersect");
         }

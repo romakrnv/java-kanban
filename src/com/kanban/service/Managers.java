@@ -11,7 +11,7 @@ public class Managers {
 
     public static FileBackedTaskManager getFileBackedTaskManager(){
         return new FileBackedTaskManager(getDefaultHistory(), getDefaultStorage(),
-                new File("resources/tz8.csv"));
+                new File("resources/save.csv"));
     }
 
     public static InMemoryTaskManager getInMemoryTaskManager() {

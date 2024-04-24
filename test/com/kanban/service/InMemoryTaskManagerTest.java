@@ -340,7 +340,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addTask_whenDurationIntersected_thenThrowManagerSaveException(){
         Task task1 = new Task();
-        task1.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 00));
+        task1.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 0));
         task1.setDuration(Duration.ofMinutes(20));
         Task task2 = new Task();
         task2.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 10));
