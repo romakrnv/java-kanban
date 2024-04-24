@@ -11,7 +11,7 @@ public class Managers {
 
     public static FileBackedTaskManager getFileBackedTaskManager(){
         return new FileBackedTaskManager(getDefaultHistory(), getDefaultStorage(),
-                new File("/Users/roman/IdeaProjects/java-kanban/src/com/kanban/resources/save.csv"));
+                new File("resources/tz8.csv"));
     }
 
     public static InMemoryTaskManager getInMemoryTaskManager() {

@@ -6,10 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    private int id;
-    private String name;
-    private String description;
-    private TaskStatus taskStatus = TaskStatus.NEW;
+    protected int id;
+    protected String name;
+    protected String description;
+    protected TaskStatus taskStatus = TaskStatus.NEW;
     protected long duration;
     protected LocalDateTime startTime;
 
@@ -68,8 +68,13 @@ public class Task {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        return getClass().getSimpleName() + "," + name + ","
-                + description + "," + id + "," + taskStatus + duration + startTime.format(formatter);
+        String value = getClass().getSimpleName() + "," + name + ","
+                + description + "," + id + "," + taskStatus + "," + duration + ",";
+        if (startTime == null) {
+            value = value + "null";
+            return value;
+        }
+        return value + startTime.format(formatter);
     }
 
     @Override

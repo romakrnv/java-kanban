@@ -1,9 +1,5 @@
-type,name,description,id,status,epicId
-Task,null,null,1,NEW
-Task,null,null,4,NEW
-Epic,null,null,2,NEW
-Epic,null,null,5,NEW
-Subtask,null,null,3,NEW,2
-Subtask,null,null,6,NEW,5
+type,name,description,id,status,duration,startTime,epicId
+Task,null,null,1,NEW,0,null
+Epic,null,null,2,NEW,0,null
 
 History is empty
