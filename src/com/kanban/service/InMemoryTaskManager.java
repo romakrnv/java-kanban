@@ -31,7 +31,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllTasks() {
-        storage.getTasks().stream().filter(this::isStartTimeExist).forEach(prioritizedTasks::remove);
+        storage.getTasks().stream()
+                .filter(this::isStartTimeExist)
+                .forEach(prioritizedTasks::remove);
         storage.clearTasks();
     }
 
@@ -84,8 +86,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllEpics() {
-        storage.getEpics().stream().filter(this::isStartTimeExist).forEach(prioritizedTasks::remove);
-        storage.getSubtasks().stream().filter(this::isStartTimeExist).forEach(prioritizedTasks::remove);
+        storage.getEpics().stream()
+                .filter(this::isStartTimeExist)
+                .forEach(prioritizedTasks::remove);
+        storage.getSubtasks().stream()
+                .filter(this::isStartTimeExist)
+                .forEach(prioritizedTasks::remove);
         storage.clearEpics();
         storage.clearSubtasks();
     }
@@ -124,7 +130,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getAllEpicsSubtasks(int id) {
         return storage.getEpic(id).getSubtasksIds().stream()
-                .map(storage::getSubtask).collect(Collectors.toList());
+                .map(storage::getSubtask)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -135,7 +142,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllSubtasks(int epicId) {
         Epic epic = storage.getEpic(epicId);
-        epic.getSubtasksIds().stream().map(storage::getSubtask).filter(this::isStartTimeExist)
+        epic.getSubtasksIds().stream()
+                .map(storage::getSubtask)
+                .filter(this::isStartTimeExist)
                 .forEach(prioritizedTasks::remove);
         epic.getSubtasksIds().forEach(storage::removeSubtask);
         epic.getSubtasksIds().clear();
@@ -240,12 +249,18 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setEndTime(null);
             return;
         }
-        Optional<Subtask> firstSubtask = storage.getSubtasks().stream().filter(sub -> epic.getSubtasksIds()
-                .contains(sub.getId())).min(Comparator.comparing(Task::getStartTime)).stream().findFirst();
+        Optional<Subtask> firstSubtask = storage.getSubtasks().stream()
+                .filter(sub -> epic.getSubtasksIds()
+                .contains(sub.getId()))
+                .min(Comparator.comparing(Task::getStartTime))
+                .stream().findFirst();
         firstSubtask.ifPresent(value -> epic.setStartTime(value.getStartTime()));
 
-        Optional<Subtask> lastSubtask = storage.getSubtasks().stream().filter(s -> epic.getSubtasksIds()
-                .contains(s.getId())).max(Comparator.comparing(Task::getEndTime)).stream().findFirst();
+        Optional<Subtask> lastSubtask = storage.getSubtasks().stream()
+                .filter(s -> epic.getSubtasksIds()
+                .contains(s.getId()))
+                .max(Comparator.comparing(Task::getEndTime))
+                .stream().findFirst();
         lastSubtask.ifPresent(value -> epic.setEndTime(value.getEndTime()));
 
         long totalDuration = 0;
@@ -270,7 +285,8 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Optional<Task> intersectedTask = prioritizedTasks.stream()
-                .filter(task -> isTasksIntersected(currentTask, task)).findFirst();
+                .filter(task -> isTasksIntersected(currentTask, task))
+                .findFirst();
         if (intersectedTask.isPresent()) {
             throw new ManagerSaveException("error:Task intersect");
         }

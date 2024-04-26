@@ -6,12 +6,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    protected int id;
-    protected String name;
-    protected String description;
-    protected TaskStatus taskStatus = TaskStatus.NEW;
-    protected long duration;
-    protected LocalDateTime startTime;
+    private int id;
+    private String name;
+    private String description;
+    private TaskStatus taskStatus = TaskStatus.NEW;
+    private long duration;
+    private LocalDateTime startTime;
 
     public int getId() {
         return id;
