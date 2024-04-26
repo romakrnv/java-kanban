@@ -1,5 +1,8 @@
 package com.kanban.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -7,6 +10,8 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus taskStatus = TaskStatus.NEW;
+    private long duration;
+    private LocalDateTime startTime;
 
     public int getId() {
         return id;
@@ -40,9 +45,39 @@ public class Task {
         this.description = description;
     }
 
+    public Duration getDuration() {
+        return Duration.ofMinutes(duration);
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration.toMinutes();
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        return this.startTime.plusMinutes(this.duration);
+    }
+
+    public LocalDateTime getStartTime() {
+        return this.startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "," + name + "," + description + "," + id + "," + taskStatus;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        String value = getClass().getSimpleName() + "," + name + ","
+                + description + "," + id + "," + taskStatus + "," + duration + ",";
+        if (startTime == null) {
+            value = value + "null";
+            return value;
+        }
+        return value + startTime.format(formatter);
     }
 
     @Override

@@ -5,9 +5,12 @@ import com.kanban.model.Subtask;
 import com.kanban.model.Task;
 import com.kanban.model.TaskStatus;
 import com.kanban.storage.Storage;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -309,5 +312,41 @@ class InMemoryTaskManagerTest {
         manager.updateEpic(epic);
 
         assertEquals(TaskStatus.DONE, manager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void updateSubtask_whenStatusChange_thenEpicTimesChange(){
+        Epic epic = new Epic();
+        epic.setId(1);
+        epic.getSubtasksIds().add(2);
+        Subtask subtask1 = new Subtask(1);
+        subtask1.setId(2);
+        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        subtask1.setStartTime(LocalDateTime.of(2024, 4, 24, 10, 20));
+        subtask1.setDuration(Duration.ofMinutes(20));
+        when(storage.getEpic(1)).thenReturn(epic);
+        when(storage.getSubtask(2)).thenReturn(subtask1);
+        when(storage.getSubtasks()).thenReturn(List.of(subtask1));
+
+        manager.updateSubtask(subtask1);
+        Duration duration = subtask1.getDuration();
+        LocalDateTime localDateTime = subtask1.getStartTime();
+        LocalDateTime expectedEpicEndTime = localDateTime.plusMinutes(duration.toMinutes());
+
+        assertEquals(expectedEpicEndTime, epic.getEndTime());
+        assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus());
+    }
+
+    @Test
+    void addTask_whenDurationIntersected_thenThrowManagerSaveException(){
+        Task task1 = new Task();
+        task1.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 0));
+        task1.setDuration(Duration.ofMinutes(20));
+        Task task2 = new Task();
+        task2.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 10));
+        task2.setDuration(Duration.ofMinutes(30));
+        manager.addTask(task1);
+
+        Assertions.assertThrows(ManagerSaveException.class, ()-> manager.addTask(task2));
     }
 }

@@ -6,6 +6,7 @@ import com.kanban.model.Task;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     Collection<Task> getAllTasks();
@@ -47,4 +48,6 @@ public interface TaskManager {
     void removeSubtask(int id);
 
     List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
 }

@@ -5,13 +5,16 @@ import com.kanban.model.Subtask;
 import com.kanban.model.Task;
 import com.kanban.model.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CsvTaskFormatter {
     public static String createDataToSave(List<Task> tasks, List<Task> history) {
         StringBuilder dataToSave = new StringBuilder();
-        dataToSave.append("type,name,description,id,status,epicId\n");
+        dataToSave.append("type,name,description,id,status,duration,startTime,epicId\n");
 
         for (Task task : tasks) {
             dataToSave.append(task.toString()).append("\n");
@@ -41,6 +44,13 @@ public class CsvTaskFormatter {
         String description = data[2];
         int id = Integer.parseInt(data[3]);
         TaskStatus status = TaskStatus.valueOf(data[4]);
+        Duration duration = Duration.ofMinutes(Integer.parseInt(data[5]));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        LocalDateTime startTime = null;
+        if (!data[6].equals("null")) {
+            startTime = LocalDateTime.parse(data[6], formatter);
+        }
+
 
         switch (type) {
             case "Task": {
@@ -49,6 +59,8 @@ public class CsvTaskFormatter {
                 task.setName(name);
                 task.setDescription(description);
                 task.setStatus(status);
+                task.setDuration(duration);
+                task.setStartTime(startTime);
                 return task;
             }
             case "Epic": {
@@ -57,15 +69,20 @@ public class CsvTaskFormatter {
                 epic.setName(name);
                 epic.setDescription(description);
                 epic.setStatus(status);
+                epic.setDuration(duration);
+                epic.setStartTime(startTime);
                 return epic;
             }
             case "Subtask": {
-                int epicId = Integer.parseInt(data[5]);
+                int epicId = Integer.parseInt(data[7]);
                 Subtask subtask = new Subtask(epicId);
                 subtask.setId(id);
                 subtask.setName(name);
                 subtask.setDescription(description);
                 subtask.setStatus(status);
+                subtask.setDuration(duration);
+                subtask.setStartTime(startTime);
+                subtask.setEpicId(epicId);
                 return subtask;
             }
             default: {
@@ -80,7 +97,7 @@ public class CsvTaskFormatter {
         if (value.equals("History is empty") || value.isBlank()) {
             return data;
         }
-        if (!value.matches(regex)) { //check that value matches the format 1,2,3,
+        if (!value.matches(regex)) {
             return data;
         }
         for (String id : value.split(",")) {
