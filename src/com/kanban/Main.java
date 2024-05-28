@@ -1,80 +1,66 @@
 package com.kanban;
 
-import com.kanban.model.Epic;
-import com.kanban.model.Subtask;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.kanban.model.Task;
-import com.kanban.model.TaskStatus;
-import com.kanban.service.FileBackedTaskManager;
-import com.kanban.service.InMemoryHistoryManager;
+import com.kanban.service.HttpTaskServer;
 import com.kanban.service.InMemoryTaskManager;
 import com.kanban.service.Managers;
 import com.kanban.service.TaskManager;
-import com.kanban.storage.Storage;
 
-import java.io.File;
-import java.time.Duration;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main {
 
-    public static void main(String[] args) {
-        /*TaskManager tm = Managers.getDefault();
-        Task task = new Task();
-        task.setStartTime(LocalDateTime.now());
-        tm.addTask(task);
-        tm.addEpic(new Epic());
-        tm.addSubtask(new Subtask(2));
-        tm.getTask(1);
-        tm.getEpic(2);
-        tm.getSubtask(3);
-        System.out.println(tm.getAllTasks());
-        System.out.println(tm.getAllEpics());
-        System.out.println(tm.getAllSubtasks());
-        System.out.println(tm.getHistory());*/
-        //TaskManager tm = FileBackedTaskManager.loadFromFile(new File("resources/tz8.csv"));
-        TaskManager tm = new InMemoryTaskManager(new InMemoryHistoryManager(), new Storage());
+    public static void main(String[] args) throws IOException {
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+
+        TaskManager tm = Managers.getDefault();
         Task task1 = new Task();
-        task1.setId(1);
-        task1.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 00));
-        task1.setDuration(Duration.ofMinutes(20));
-
+        task1.setStartTime(LocalDateTime.now());
         Task task2 = new Task();
-        task2.setId(2);
-        task2.setStartTime(LocalDateTime.of(2024, 4, 24, 12, 22));
-        task2.setDuration(Duration.ofMinutes(30));
-
+        task2.setStartTime(LocalDateTime.now());
         tm.addTask(task1);
         tm.addTask(task2);
-
-        task1.setDuration(Duration.ofMinutes(40));
-        tm.updateTask(task1);
-
-        Epic epic = new Epic();
-        epic.setId(3);
-
-        tm.addEpic(epic);
-
-        Subtask subtask1 = new Subtask(3);
-        subtask1.setId(4);
-        subtask1.setStartTime(LocalDateTime.of(2024, 4, 24, 14, 22));
-        subtask1.setDuration(Duration.ofMinutes(20));
+        System.out.println(tm.getAllTasks());
+        //System.out.println(gson.toJson(tm.getAllTasks()));
+        tm.addTask(new Task());
+        HttpTaskServer httpTaskServer = new HttpTaskServer(tm);
 
 
-        tm.addSubtask(subtask1);
+        }
+    /*
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
 
-        subtask1.setStatus(TaskStatus.IN_PROGRESS);
+        Task task = new Task();
+        task.setStartTime(LocalDateTime.now());
+        String jsonString = gson.toJson(task);
+        System.out.println(jsonString);
 
-        tm.updateSubtask(subtask1);
+    }*/
+    private static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+        private  final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        @Override
+        public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
+            jsonWriter.value(localDateTime.format(dtf));
+        }
 
-        System.out.println(tm.getPrioritizedTasks());
-
-        Task task3 = new Task();
-        task3.setId(5);
-        tm.addTask(task3);
-
-        tm.removeAllTasks();
-        System.out.println(tm.getAllEpicsSubtasks(3));
-        System.out.println(tm.getPrioritizedTasks());
-        System.out.println(tm.getEpic(3));
+        @Override
+        public LocalDateTime read(final JsonReader jsonReader) throws IOException {
+            return LocalDateTime.parse(jsonReader.nextString(), dtf);
+        }
     }
 }
