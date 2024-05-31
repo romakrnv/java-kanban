@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id = 1;
@@ -48,9 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task addTask(Task task) {
-        if (task.getId() == 0) {
-            task.setId(generateId());
-        }
+        task.setId(generateId());
         if (isStartTimeExist(task)) {
             checkIfIntersectedTaskExist(task);
             prioritizedTasks.add(task);
@@ -60,7 +57,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public Task updateTask(Task task) {
+        if (storage.getTask(task.getId()) == null) {
+            return null;
+        }
         if (isStartTimeExist(storage.getTask(task.getId()))) {
             prioritizedTasks.remove(storage.getTask(task.getId()));
         }
@@ -69,6 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.add(task);
         }
         storage.add(task.getId(), task);
+        return task;
     }
 
     @Override
@@ -98,24 +99,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int id) {
+        if (storage.getEpic(id) == null) {
+            return null;
+        }
         historyManager.add(storage.getEpic(id));
         return storage.getEpic(id);
     }
 
     @Override
     public Epic addEpic(Epic epic) {
-        if (epic.getId() == 0) {
-            epic.setId(generateId());
-        }
+        epic.setId(generateId());
         storage.add(epic.getId(), epic);
         return epic;
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public Epic updateEpic(Epic epic) {
+        if (storage.getEpic(epic.getId()) == null) {
+            return null;
+        }
         epic.setSubtasksIds(storage.getEpic(epic.getId()).getSubtasksIds());
         storage.add(epic.getId(), epic);
         checkEpicStatus(epic);
+        return epic;
     }
 
     @Override
@@ -129,9 +135,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getAllEpicsSubtasks(int id) {
+        if (storage.getEpic(id) == null) {
+            return null;
+        }
         return storage.getEpic(id).getSubtasksIds().stream()
                 .map(storage::getSubtask)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -154,6 +163,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(int id) {
+        if (storage.getSubtask(id) == null) {
+            return null;
+        }
         historyManager.add(storage.getSubtask(id));
         return storage.getSubtask(id);
     }
@@ -163,9 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (storage.getEpic(subtask.getEpicId()) == null) {
             return null;
         }
-        if (subtask.getId() == 0) {
-            subtask.setId(generateId());
-        }
+        subtask.setId(generateId());
         if (isStartTimeExist(subtask)) {
             checkIfIntersectedTaskExist(subtask);
             prioritizedTasks.add(subtask);
@@ -178,9 +188,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        if (storage.getEpic(subtask.getEpicId()) == null) {
-            return;
+    public Subtask updateSubtask(Subtask subtask) {
+        if (storage.getEpic(subtask.getEpicId()) == null || storage.getSubtask(subtask.getId()) == null) {
+            return null;
         }
         if (isStartTimeExist(storage.getSubtask(subtask.getId()))) {
             prioritizedTasks.remove(storage.getSubtask(subtask.getId()));
@@ -193,6 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         updateEpicDurationAndTime(storage.getEpic(subtask.getEpicId()));
         checkEpicStatus(storage.getEpic(subtask.getEpicId()));
+        return subtask;
     }
 
     @Override
@@ -251,14 +262,16 @@ public class InMemoryTaskManager implements TaskManager {
         }
         Optional<Subtask> firstSubtask = storage.getSubtasks().stream()
                 .filter(sub -> epic.getSubtasksIds()
-                .contains(sub.getId()))
+                        .contains(sub.getId()))
+                .filter(subtask -> subtask.getStartTime() != null)
                 .min(Comparator.comparing(Task::getStartTime))
                 .stream().findFirst();
         firstSubtask.ifPresent(value -> epic.setStartTime(value.getStartTime()));
 
         Optional<Subtask> lastSubtask = storage.getSubtasks().stream()
                 .filter(s -> epic.getSubtasksIds()
-                .contains(s.getId()))
+                        .contains(s.getId()))
+                .filter(subtask -> subtask.getStartTime() != null)
                 .max(Comparator.comparing(Task::getEndTime))
                 .stream().findFirst();
         lastSubtask.ifPresent(value -> epic.setEndTime(value.getEndTime()));

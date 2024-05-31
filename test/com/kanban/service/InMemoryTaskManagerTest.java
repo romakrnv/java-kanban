@@ -346,7 +346,6 @@ class InMemoryTaskManagerTest {
         task2.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 10));
         task2.setDuration(Duration.ofMinutes(30));
         manager.addTask(task1);
-
         Assertions.assertThrows(ManagerSaveException.class, ()-> manager.addTask(task2));
     }
 }
