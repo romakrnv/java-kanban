@@ -4,12 +4,11 @@ import com.kanban.model.Epic;
 import com.kanban.model.Subtask;
 import com.kanban.model.Task;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
 public interface TaskManager {
-    Collection<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     void removeAllTasks();
 
@@ -21,7 +20,7 @@ public interface TaskManager {
 
     void removeTask(int id);
 
-    Collection<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     void removeAllEpics();
 
