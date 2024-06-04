@@ -1,7 +1,6 @@
 package com.kanban.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kanban.model.Task;
 import com.kanban.server.HttpTaskServer;
 import com.kanban.storage.Storage;
@@ -31,11 +30,7 @@ public class HttpTasksTest {
     @BeforeEach
     public void setUp() throws IOException {
         taskManager = new InMemoryTaskManager(new InMemoryHistoryManager(), new Storage());
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .registerTypeAdapter(LocalDateTime.class, new HttpTaskServer.LocalDateTimeAdapter())
-                .setPrettyPrinting()
-                .create();
+        gson = TestUtils.getGson();
         taskServer = new HttpTaskServer(taskManager);
     }
 
@@ -184,10 +179,10 @@ public class HttpTasksTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String er = ("[" + taskJson1 + "," + taskJson2 + "]");
-        er = removeSpaces(er);
+        er = TestUtils.removeSpaces(er);
 
         assertEquals(200, response.statusCode());
-        assertEquals(er, removeSpaces(response.body()));
+        assertEquals(er, TestUtils.removeSpaces(response.body()));
     }
 
     @Test
@@ -225,10 +220,10 @@ public class HttpTasksTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String er = ("[" + taskJson1 + "," + taskJson2 + "]");
-        er = removeSpaces(er);
+        er = TestUtils.removeSpaces(er);
 
         assertEquals(200, response.statusCode());
-        assertEquals(er, removeSpaces(response.body()));
+        assertEquals(er, TestUtils.removeSpaces(response.body()));
     }
 
     @Test
@@ -257,10 +252,10 @@ public class HttpTasksTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String er = ("[" + taskJson2 + "," + taskJson3 + "," + taskJson1 + "]");
-        er = removeSpaces(er);
+        er = TestUtils.removeSpaces(er);
 
         assertEquals(200, response.statusCode());
-        assertEquals(er, removeSpaces(response.body()));
+        assertEquals(er, TestUtils.removeSpaces(response.body()));
     }
 
     private Task createTask() {
@@ -269,9 +264,5 @@ public class HttpTasksTest {
         task.setDescription("some text");
         task.setStartTime(LocalDateTime.now());
         return task;
-    }
-
-    private String removeSpaces(String string) {
-        return string.replaceAll(" ", "").replaceAll("\n", "");
     }
 } 

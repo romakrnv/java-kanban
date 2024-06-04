@@ -1,7 +1,6 @@
 package com.kanban.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kanban.model.Epic;
 import com.kanban.model.Subtask;
 import com.kanban.server.HttpTaskServer;
@@ -15,7 +14,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,11 +28,7 @@ public class HttpEpicsTest {
     @BeforeEach
     public void setUp() throws IOException {
         taskManager = new InMemoryTaskManager(new InMemoryHistoryManager(), new Storage());
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .registerTypeAdapter(LocalDateTime.class, new HttpTaskServer.LocalDateTimeAdapter())
-                .setPrettyPrinting()
-                .create();
+        gson = TestUtils.getGson();
         taskServer = new HttpTaskServer(taskManager);
     }
 
@@ -102,10 +96,10 @@ public class HttpEpicsTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String er = ("[" + taskJson1 + "," + taskJson2 + "]");
-        er = removeSpaces(er);
+        er = TestUtils.removeSpaces(er);
 
         assertEquals(200, response.statusCode());
-        assertEquals(er, removeSpaces(response.body()));
+        assertEquals(er, TestUtils.removeSpaces(response.body()));
     }
 
     @Test
@@ -126,12 +120,11 @@ public class HttpEpicsTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String er = ("[" + subtask1ToJson + "," + subtask2ToJson + "]");
-        er = removeSpaces(er);
+        er = TestUtils.removeSpaces(er);
 
         assertEquals(200, response.statusCode());
-        assertEquals(er, removeSpaces(response.body()));
+        assertEquals(er, TestUtils.removeSpaces(response.body()));
     }
-
 
     @Test
     public void deleteTask() throws IOException, InterruptedException {
@@ -149,9 +142,5 @@ public class HttpEpicsTest {
 
         assertEquals(204, response.statusCode());
         assertNull(taskManager.getEpic(id));
-    }
-
-    private String removeSpaces(String string) {
-        return string.replaceAll(" ", "").replaceAll("\n", "");
     }
 }
