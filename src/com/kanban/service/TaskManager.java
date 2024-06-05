@@ -4,12 +4,11 @@ import com.kanban.model.Epic;
 import com.kanban.model.Subtask;
 import com.kanban.model.Task;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
 public interface TaskManager {
-    Collection<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     void removeAllTasks();
 
@@ -17,11 +16,11 @@ public interface TaskManager {
 
     Task addTask(Task task);
 
-    void updateTask(Task task);
+    Task updateTask(Task task);
 
     void removeTask(int id);
 
-    Collection<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     void removeAllEpics();
 
@@ -29,13 +28,13 @@ public interface TaskManager {
 
     Epic addEpic(Epic epic);
 
-    void updateEpic(Epic epic);
+    Epic updateEpic(Epic epic);
 
     void removeEpic(int id);
 
-    Collection<Subtask> getAllEpicsSubtasks(int id);
+    List<Subtask> getAllEpicsSubtasks(int id);
 
-    Collection<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
     void removeAllSubtasks(int relatedEpicId);
 
@@ -43,7 +42,7 @@ public interface TaskManager {
 
     Subtask addSubtask(Subtask subtask);
 
-    void updateSubtask(Subtask subtask);
+    Subtask updateSubtask(Subtask subtask);
 
     void removeSubtask(int id);
 

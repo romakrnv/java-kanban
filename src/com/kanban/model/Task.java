@@ -6,14 +6,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private TaskStatus taskStatus = TaskStatus.NEW;
     private long duration;
     private LocalDateTime startTime;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -89,7 +89,7 @@ public class Task {
             return false;
         }
         Task task = (Task) o;
-        return id == task.id;
+        return Objects.equals(id, task.id);
     }
 
     @Override

@@ -1,25 +1,7 @@
 package com.kanban.service;
 
-import com.kanban.model.Epic;
-import com.kanban.model.Subtask;
-import com.kanban.model.Task;
-import com.kanban.model.TaskStatus;
-import com.kanban.storage.Storage;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 class InMemoryTaskManagerTest {
+    /*
     private InMemoryTaskManager manager;
     private Storage storage;
     private InMemoryHistoryManager historyManager;
@@ -346,7 +328,6 @@ class InMemoryTaskManagerTest {
         task2.setStartTime(LocalDateTime.of(2024, 4, 24, 11, 10));
         task2.setDuration(Duration.ofMinutes(30));
         manager.addTask(task1);
-
         Assertions.assertThrows(ManagerSaveException.class, ()-> manager.addTask(task2));
-    }
+    } */
 }

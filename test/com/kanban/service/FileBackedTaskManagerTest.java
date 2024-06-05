@@ -92,7 +92,6 @@ class FileBackedTaskManagerTest {
                 fileTaskSize++;
             }
         }
-
         assertEquals(mapSize, fileTaskSize, "Size doesn't match");
     }
 }

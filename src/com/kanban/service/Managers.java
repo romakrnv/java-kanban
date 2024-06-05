@@ -6,7 +6,7 @@ import java.io.File;
 
 public class Managers {
     public static TaskManager getDefault() {
-        return getFileBackedTaskManager();
+        return getInMemoryTaskManager();
     }
 
     public static FileBackedTaskManager getFileBackedTaskManager(){
